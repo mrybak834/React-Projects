@@ -1,0 +1,46 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Components: ExpenseList: Render ExpenseList (empty) 1`] = `
+<div>
+  <p>
+    No Expenses
+  </p>
+</div>
+`;
+
+exports[`Components: ExpenseList: Render ExpenseList (populated) 1`] = `
+<div>
+  <ExpenseListItem
+    amount={1}
+    description="test"
+    id="1"
+    key="0"
+    note="test"
+    timestamp={864000000}
+  />
+  <ExpenseListItem
+    amount={60000}
+    description="Rent"
+    id="2"
+    key="1"
+    note=""
+    timestamp={432000000}
+  />
+  <ExpenseListItem
+    amount={99000}
+    description="Car"
+    id="3"
+    key="2"
+    note="Car payment"
+    timestamp={0}
+  />
+  <ExpenseListItem
+    amount={4500}
+    description="Credit Card"
+    id="4"
+    key="3"
+    note="Mastercard"
+    timestamp={-432000000}
+  />
+</div>
+`;
