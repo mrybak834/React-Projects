@@ -9,7 +9,6 @@
     "build:dev": "webpack",
     "build:prod": "webpack -p --env production",
     "test": "jest --config=jest.config.json",
-    "serve": "live-server public/",
     "start": "node server/server.js",
     "heroku-postbuild": "yarn run build:prod"
   },
@@ -21,12 +20,7 @@
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
     "css-loader": "^0.28.11",
-    "enzyme": "^3.3.0",
-    "enzyme-adapter-react-16": "^1.1.1",
-    "enzyme-to-json": "^3.3.4",
     "express": "^4.16.3",
-    "jest": "^23.2.0",
-    "live-server": "^1.2.0",
     "mini-css-extract-plugin": "^0.4.1",
     "moment": "^2.22.2",
     "node-sass": "^4.9.0",
@@ -44,7 +38,13 @@
     "style-loader": "^0.21.0",
     "uuid": "^3.2.1",
     "webpack": "^4.8.3",
-    "webpack-cli": "^2.1.4",
+    "webpack-cli": "^2.1.4"
+  },
+  "devDependencies": {
+    "enzyme": "^3.3.0",
+    "enzyme-adapter-react-16": "^1.1.1",
+    "enzyme-to-json": "^3.3.4",
+    "jest": "^23.2.0",
     "webpack-dev-server": "^3.1.4"
   }
 }

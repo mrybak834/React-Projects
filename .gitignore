@@ -71,7 +71,4 @@ typings/
 !.vscode/extensions.json
 
 # Generated files
-public/bundle.js
-public/bundle.js.map
-public/styles.css
-public/styles.css.map
+public/dist/
