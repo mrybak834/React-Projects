@@ -11,10 +11,9 @@ exports[`Components: ExpenseListItem: Render Expense List Item 1`] = `
     </Link>
   </h3>
   <p>
-    $
-    1
-     - Created At: 
-    864000000
+    $0.01
+    - Created At: 
+    January 10th, 1970
   </p>
 </div>
 `;
