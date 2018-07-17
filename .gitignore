@@ -71,15 +71,4 @@ typings/
 !.vscode/extensions.json
 
 # Generated files
-<<<<<<< HEAD
 public/dist/
-
-# Parcel
-.cache
-dist
-=======
-public/bundle.js
-public/bundle.js.map
-public/styles.css
-public/styles.css.map
->>>>>>> parent of 1e3a36a... Seperated dev/prod dependencies, moved bundles into seperate folder
