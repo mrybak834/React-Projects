@@ -10,7 +10,7 @@
     "build:dev": "webpack",
     "build:prod": "webpack -p --env production",
     "parcel:dev": "parcel public/index.html",
-    "parcel:prod" : "parcel build public/index.html",
+    "parcel:prod" : "parcel build src/app.js",
     "test": "jest --config=jest.config.json",
     "heroku-postbuild": "yarn run parcel:prod"
   },
