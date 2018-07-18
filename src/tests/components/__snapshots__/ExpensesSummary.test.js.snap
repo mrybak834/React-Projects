@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Multiple expenses 1`] = `
+<div>
+  4 expenses totaling $1,635.01
+</div>
+`;
+
+exports[`No expenses 1`] = `
+<div>
+  No expenses
+</div>
+`;
+
+exports[`One Expense 1`] = `
+<div>
+  1 expense totaling $600.00
+</div>
+`;
