@@ -1,25 +1,64 @@
 import uuid from 'uuid';
+import database from '../../firebase/firebase';
+/**
+ * Normal redux actions:
+ * Component calls the action generator (these functions)
+ * Actinn generator returns the generated object
+ * Component dispatches the object
+ * Redux store changes/provides info
+ * 
+ * Asynchronous actions (for interacting with DB):
+ * Component calls action generator
+ * Action generator returns a function
+ * Component dispatches a function (done via redux-thunk)
+ * function runs, interacts with db, can do whatever else it wants,
+ * including then generating another action to dispatch to the traditional redux store
+ */
 
-
-export const addExpense = ( 
-    {
-        description = '', 
-        note = '', 
-        amount = 0, 
-        timestamp = 0
-    } = {} 
-) => (
+export const addExpense = (expense) => (
     {
         type: 'ADD_EXPENSE',
-        expense: {
-            id: uuid(),
-            description,
-            note,
-            amount,
-            timestamp
-        }
+        expense
     }
 );
+
+/**
+ * Explanation of syntax:
+ * (expenseData = {})          Takes the expense passed in. If none, set to {}
+ * 
+ * const {...} = expenseData   Creates the variables with the values.
+ *                             Any variable that expenseData contains, overrides the LHS variables.
+ * 
+ * Equivalent to: 
+ * const fun = 
+ * ( 
+ *     {
+ *         variables declared
+ *     } = {} 
+ * ) => { variables available here }
+ * 
+ */
+export const startAddExpense = (expenseData = {}) => {
+    return (dispatch) => {
+        const {
+            description = '', 
+            note = '', 
+            amount = 0, 
+            timestamp = 0
+        } = expenseData;
+        const expense = { description, note, amount, timestamp };
+
+        database.ref('expenses')
+            .push(expense)
+            .then((ref) => {
+                dispatch(addExpense({
+                    id: ref.key,
+                    ...expense
+                }));
+            })
+            .catch((e) => console.log('Adding expense failed: ', e));
+    };
+}
 
 export const removeExpense = (id = undefined) => (
     {
