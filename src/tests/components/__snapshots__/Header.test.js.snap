@@ -9,7 +9,7 @@ exports[`Components: Header: Render Header 1`] = `
     activeClassName="is-active"
     aria-current="page"
     exact={true}
-    to="/"
+    to="/dashboard"
   >
     Dashboard 
   </NavLink>
@@ -20,14 +20,6 @@ exports[`Components: Header: Render Header 1`] = `
     to="/new"
   >
     New 
-  </NavLink>
-  <NavLink
-    activeClassName="is-active"
-    aria-current="page"
-    exact={true}
-    to="/edit"
-  >
-    Edit 
   </NavLink>
   <br />
   ------------------------------
