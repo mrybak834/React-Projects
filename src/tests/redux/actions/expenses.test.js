@@ -1,11 +1,16 @@
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { addExpense, removeExpense, editExpense, startAddExpense, setExpenses, startSetExpenses } from '../../../redux/actions/expenses';
+import { combineReducers } from 'redux';
+import { addExpense, removeExpense, editExpense, startAddExpense, setExpenses, startSetExpenses, startRemoveExpense } from '../../../redux/actions/expenses';
 import expenses from '../../fixtures/expenses';
 import database from '../../../firebase/firebase';
+import expensesReducer from '../../../redux/reducers/expenses';
+import filtersReducer from '../../../redux/reducers/filters';
+
 
 // Create a mock redux store for testing async actions
 const createMockStore = configureMockStore([thunk]);
+
 
 const createTestDB = (done) => {
     const expensesData = {};
@@ -195,4 +200,26 @@ test('Set Expenses Asynchronous Action Generator', (done) => {
             done();
         })
         .catch((e) => console.log('Error reading DB: ', e));
+});
+
+test('Remove Expense Asynchronous Action Generator', (done) => {
+    const store = createMockStore({});
+
+    store.dispatch(startRemoveExpense(expenses[0].id))
+        .then(() => {
+            const actions = store.getActions();
+
+            expect(actions[0]).toEqual({
+                type: 'REMOVE_EXPENSE',
+                id: expenses[0].id
+            });
+
+            return database.ref(`expenses/${expenses[0].id}`)
+                .once('value')
+        })
+        .then((snapshot) => {
+            expect(snapshot.exists()).toBeFalsy();
+            done();
+        })
+        .catch((e) => console.log('Error removing expense', e));
 });
