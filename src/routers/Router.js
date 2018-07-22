@@ -1,5 +1,6 @@
 import React from 'react';
-import { BrowserRouter, Route, Switch, Link, NavLink } from 'react-router-dom';
+import { Router, Route, Switch, Link, NavLink } from 'react-router-dom';
+import createHistory from 'history/createBrowserHistory';
 import SignInPage from '../components/SignInPage';
 import Header from '../components/Header';
 import DashboardPage from '../components/DashboardPage';
@@ -8,9 +9,16 @@ import EditExpensePage from '../components/EditExpensePage';
 import HelpPage from '../components/HelpPage';
 import ErrorPage from '../components/ErrorPage';
 
+/**
+ * BrowserRouter creates browserhistory by itself,
+ * but it is only accessible to child components.
+ * 
+ * In order to access history outside, we need to handle it ourselves
+ */
+export const history = createHistory();
 
 const AppRouter = () => (
-    <BrowserRouter>
+    <Router history={history}>
         <div>
             <Header />
             <Switch>
@@ -22,7 +30,7 @@ const AppRouter = () => (
                 <Route component={ErrorPage} />
             </Switch>
         </div>
-    </BrowserRouter>
+    </Router>
 );
 
 export default AppRouter;

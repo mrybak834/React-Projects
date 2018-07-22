@@ -7,7 +7,7 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import AppRouter from './routers/Router';
+import AppRouter, { history } from './routers/Router';
 import { Provider } from 'react-redux';
 import configureStore from './redux/store/config';
 import 'normalize.css/normalize.css';
@@ -33,21 +33,37 @@ const jsx = (
     </Provider>
 );
 
-ReactDOM.render( jsx, document.getElementById('app'));
-
-store.dispatch(startSetExpenses())
-    .then(() => {
-        
-    })
-    .catch(() => {
-
-    });
+/**
+ * Only render the page one time.
+ * All other times we simply statically path through, using history.push
+ */
+let hasRendered = false;
+const renderApp = () => {
+    if(!hasRendered){
+        ReactDOM.render( jsx, document.getElementById('app'));
+        hasRendered = true;
+    }
+};
 
 auth.onAuthStateChanged((user) => {
     if (user){
-        console.log('User signed in: ', user);
+        store.dispatch(startSetExpenses())
+            .then(() => {
+                renderApp();
+
+                // If just logged in, redirect to dashboard
+                // This makes sure that on hard page refreshes, you are not redirected unnecessarily
+                if (history.location.pathname === '/') {
+                    history.push('/dashboard');
+                }
+            })
+            .catch(() => {
+
+            });
     }
     else {
-        console.log('User signed out');
+        renderApp();
+        // Go to login page
+        history.push('/');
     }
 });
