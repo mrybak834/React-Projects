@@ -21,6 +21,11 @@ exports[`Components: Header: Render Header 1`] = `
   >
     New 
   </NavLink>
+  <button
+    onClick={[MockFunction]}
+  >
+    Sign Out
+  </button>
   <br />
   ------------------------------
 </header>

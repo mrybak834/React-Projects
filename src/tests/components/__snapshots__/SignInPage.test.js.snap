@@ -2,8 +2,10 @@
 
 exports[`Component Snapshot 1`] = `
 <div>
-  <button>
-    Login
+  <button
+    onClick={[MockFunction]}
+  >
+    Log In
   </button>
 </div>
 `;

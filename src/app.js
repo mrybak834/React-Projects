@@ -15,6 +15,8 @@ import './styles/styles.scss';
 import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
 import { startSetExpenses } from './redux/actions/expenses';
+import { auth } from './firebase/firebase';
+
 
 const store = configureStore();
 
@@ -40,3 +42,12 @@ store.dispatch(startSetExpenses())
     .catch(() => {
 
     });
+
+auth.onAuthStateChanged((user) => {
+    if (user){
+        console.log('User signed in: ', user);
+    }
+    else {
+        console.log('User signed out');
+    }
+});
