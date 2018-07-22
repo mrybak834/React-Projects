@@ -1,7 +1,7 @@
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { combineReducers } from 'redux';
-import { addExpense, removeExpense, editExpense, startAddExpense, setExpenses, startSetExpenses, startRemoveExpense } from '../../../redux/actions/expenses';
+import { addExpense, removeExpense, editExpense, startAddExpense, setExpenses, startSetExpenses, startRemoveExpense, startEditExpense } from '../../../redux/actions/expenses';
 import expenses from '../../fixtures/expenses';
 import database from '../../../firebase/firebase';
 import expensesReducer from '../../../redux/reducers/expenses';
@@ -222,4 +222,41 @@ test('Remove Expense Asynchronous Action Generator', (done) => {
             done();
         })
         .catch((e) => console.log('Error removing expense', e));
+});
+
+test('Edit Expense Asynchronous Action Generator', (done) => {
+    const store = createMockStore({});
+
+    const id = expenses[0].id;
+    const updates = {
+        description: 'editTest', 
+        note: 'editTest', 
+        amount: 999, 
+        timestamp: 999
+    };
+
+    store.dispatch(startEditExpense(id, updates))
+        .then(() => {
+            const actions = store.getActions();
+
+            expect(actions[0]).toEqual({
+                type: 'EDIT_EXPENSE',
+                id,
+                updates
+            });
+
+            return database.ref(`expenses/${id}`)
+                .once('value')
+        })
+        .then((snapshot) => {
+            expect({
+                id: snapshot.key, 
+                ...snapshot.val()
+            }).toEqual({
+                id,
+                ...updates
+            })
+            done();
+        })
+        .catch((e) => console.log('Error editing expense', e));
 });

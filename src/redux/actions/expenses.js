@@ -100,6 +100,17 @@ export const editExpense = (id = undefined, updates = {}) => (
         updates
     }
 );
+
+export const startEditExpense = (id = undefined, updates = {}) => {
+    return (dispatch) => {
+        return database.ref(`expenses/${id}`)
+            .update(updates)
+            .then(() => {
+                dispatch(editExpense(id, updates));
+            })
+            .catch((e) => console.log('Error editing expense: ', e));
+    }
+}
 //#endregion Edit Expense
 
 //#region Set Expenses
