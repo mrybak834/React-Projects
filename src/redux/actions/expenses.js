@@ -1,5 +1,4 @@
-import uuid from 'uuid';
-import database from '../../firebase/firebase';
+//#region Imports
 /**
  * Normal redux actions:
  * Component calls the action generator (these functions)
@@ -14,7 +13,14 @@ import database from '../../firebase/firebase';
  * function runs, interacts with db, can do whatever else it wants,
  * including then generating another action to dispatch to the traditional redux store
  */
+import uuid from 'uuid';
+import database from '../../firebase/firebase';
+//#endregion Imports
 
+//#region Add Expense
+/**
+ * Normal action
+ */
 export const addExpense = (expense) => (
     {
         type: 'ADD_EXPENSE',
@@ -23,6 +29,7 @@ export const addExpense = (expense) => (
 );
 
 /**
+ * Asynchronous action
  * Explanation of syntax:
  * (expenseData = {})          Takes the expense passed in. If none, set to {}
  * 
@@ -63,14 +70,18 @@ export const startAddExpense = (expenseData = {}) => {
             .catch((e) => console.log('Adding expense failed: ', e));
     };
 }
+//#endregion Add Expense
 
+//#region Remove Expense
 export const removeExpense = (id = undefined) => (
     {
         type: 'REMOVE_EXPENSE',
         id
     }
 );
+//#endregion Remove Expense
 
+//#region Edit Expense
 export const editExpense = (id = undefined, updates = {}) => (
     {
         type: 'EDIT_EXPENSE',
@@ -78,3 +89,33 @@ export const editExpense = (id = undefined, updates = {}) => (
         updates
     }
 );
+//#endregion Edit Expense
+
+//#region Set Expenses
+
+export const setExpenses = (expenses) => ({
+    type: 'SET_EXPENSES',
+    expenses
+});
+
+export const startSetExpenses = () => {
+    return (dispatch) => {
+
+        return database.ref('expenses')
+            .once('value')
+            .then((snapshot) => {
+                const expenses = [];
+                snapshot.forEach((expenseSnapshot) => {
+                    expenses.push({
+                        id: expenseSnapshot.key,
+                        ...expenseSnapshot.val()
+                    });
+                });
+
+                dispatch(setExpenses(expenses));
+            })
+            .catch((e) => console.log('Setting expenses failed: ', e));
+    };
+};
+
+//#endregion Set Expenses

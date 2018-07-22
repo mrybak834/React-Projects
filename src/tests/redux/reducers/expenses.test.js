@@ -99,3 +99,15 @@ test('Reducers: Expenses: editExpense (invalid)', () => {
 
     expect(state).toEqual(expenses);
 });
+
+test('setExpenses', () => {
+    const action = {
+        type: 'SET_EXPENSES',
+        expenses: [expenses[0], expenses[1]]
+    }
+
+    // Send over dummy data that should be wiped out
+    const state = expensesReducer(expenses, action);
+
+    expect(state).toEqual([expenses[0], expenses[1]]);
+});

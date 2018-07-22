@@ -1,11 +1,31 @@
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { addExpense, removeExpense, editExpense, startAddExpense } from '../../../redux/actions/expenses';
+import { addExpense, removeExpense, editExpense, startAddExpense, setExpenses, startSetExpenses } from '../../../redux/actions/expenses';
 import expenses from '../../fixtures/expenses';
 import database from '../../../firebase/firebase';
 
 // Create a mock redux store for testing async actions
 const createMockStore = configureMockStore([thunk]);
+
+const createTestDB = (done) => {
+    const expensesData = {};
+
+    expenses.forEach(({ id, description, note, amount, timestamp}) => {
+        // Adds on an id (a unique attribute), and saves this object at that location
+        expensesData[id] = { description, note, amount, timestamp};
+    });
+
+    database.ref('expenses').set(expensesData);
+    done();
+};
+
+beforeEach((done) => {
+    createTestDB(done);
+});
+
+afterAll((done) => {
+    createTestDB(done);
+});
 
 /**
  * addExpense
@@ -59,7 +79,7 @@ test('Add Expense: Asynchronous action (with values)', (done) => {
         .catch((e) => console.log("Error reading DB: ", e));
 });
 
-test('Add Expense: Asynchronous action (with values)', (done) => {
+test('Add Expense: Asynchronous action (defaults)', (done) => {
     const store = createMockStore({});
 
     store.dispatch(startAddExpense())
@@ -148,4 +168,31 @@ test ('Expense Action Object (default): editExpense', () => {
         id: undefined,
         updates: {}
     });
+});
+
+test('Set Expenses Action Generator', () => {
+    const action = setExpenses(expenses);
+
+    expect(action).toEqual({
+        type: 'SET_EXPENSES',
+        expenses
+    })
+});
+
+test('Set Expenses Asynchronous Action Generator', (done) => {
+    const store = createMockStore({});
+
+    store.dispatch(startSetExpenses())
+        .then(() => {
+            // Check if the action was correctly dispatched
+            const actions = store.getActions();
+
+            expect(actions[0]).toEqual({
+                type: 'SET_EXPENSES',
+                expenses
+            });
+
+            done();
+        })
+        .catch((e) => console.log('Error reading DB: ', e));
 });
