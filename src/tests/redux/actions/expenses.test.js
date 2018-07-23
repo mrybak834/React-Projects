@@ -1,11 +1,8 @@
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { combineReducers } from 'redux';
 import { addExpense, removeExpense, editExpense, startAddExpense, setExpenses, startSetExpenses, startRemoveExpense, startEditExpense } from '../../../redux/actions/expenses';
 import expenses from '../../fixtures/expenses';
 import database from '../../../firebase/firebase';
-import expensesReducer from '../../../redux/reducers/expenses';
-import filtersReducer from '../../../redux/reducers/filters';
 
 
 // Create a mock redux store for testing async actions

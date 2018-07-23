@@ -7,14 +7,15 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import AppRouter, { history } from './routers/Router';
 import { Provider } from 'react-redux';
 import configureStore from './redux/store/config';
+import AppRouter, { history } from './routers/Router';
 import 'normalize.css/normalize.css';
 import './styles/styles.scss';
 import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
 import { startSetExpenses } from './redux/actions/expenses';
+import { signIn, signOut } from './redux/actions/auth';
 import { auth } from './firebase/firebase';
 
 
@@ -47,6 +48,9 @@ const renderApp = () => {
 
 auth.onAuthStateChanged((user) => {
     if (user){
+        // Calls the normal action generator, because it runs not only when the user explicitly clicks sign in / out,
+        // but also just when the user loads the page
+        store.dispatch(signIn(user.uid));
         store.dispatch(startSetExpenses())
             .then(() => {
                 renderApp();
@@ -62,6 +66,7 @@ auth.onAuthStateChanged((user) => {
             });
     }
     else {
+        store.dispatch(signOut());
         renderApp();
         // Go to login page
         history.push('/');
