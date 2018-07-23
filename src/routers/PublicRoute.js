@@ -1,17 +1,10 @@
-/**
- * Route for components that should be private until the user is logged in
- * Redirects otherwise
- */
 import React from 'react';
 import { connect } from 'react-redux';
 import { Route, Redirect } from 'react-router-dom';
 import Header from '../components/Header';
 
-/**
- * component: Component     Renames component to Component, in order to satisfy React naming standards
- * ...rest                  (can be named anything) takes the rest of the props that were passed in and destructures them
- */
-export const PrivateRoute = ({ 
+
+export const PublicRoute = ({ 
     isAuthenticated, 
     component: Component,
     ...rest
@@ -22,11 +15,11 @@ export const PrivateRoute = ({
             isAuthenticated ? (
                 <div>
                     <Header />
-                    <Component {...props} />
+                    <Redirect to="/dashboard" />
                 </div>
             ) : (
                 <div>
-                    <Redirect to="/" />
+                    <Component {...props} />
                 </div>
             )
         )}
@@ -38,4 +31,4 @@ const mapStateToProps = (state) => ({
     isAuthenticated: !!state.auth.uid
 });
 
-export default connect(mapStateToProps)(PrivateRoute);
+export default connect(mapStateToProps)(PublicRoute);

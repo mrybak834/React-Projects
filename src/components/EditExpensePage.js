@@ -19,7 +19,10 @@ export class EditExpensePage extends React.Component {
 
     render() {
         return (
-            <div>
+
+            this.props.expense ? (
+                <div>
+                {}
                 <p>Edit Expense: {this.props.expense.description}</p>
                 <ExpenseForm 
                     expense={this.props.expense}
@@ -29,6 +32,9 @@ export class EditExpensePage extends React.Component {
                     onClick={this.onClick}
                 >Remove</button>
             </div>
+            ) : (
+                <p>Invalid Expense</p>
+            )
         );
     }
 }
