@@ -4,7 +4,8 @@ import { addExpense, removeExpense, editExpense, startAddExpense, setExpenses, s
 import expenses from '../../fixtures/expenses';
 import database from '../../../firebase/firebase';
 
-
+const uid = 'testUID';
+const authState = { auth: { uid } };
 // Create a mock redux store for testing async actions
 const createMockStore = configureMockStore([thunk]);
 
@@ -17,7 +18,7 @@ const createTestDB = (done) => {
         expensesData[id] = { description, note, amount, timestamp};
     });
 
-    database.ref('expenses').set(expensesData);
+    database.ref(`users/${uid}/expenses`).set(expensesData);
     done();
 };
 
@@ -52,8 +53,8 @@ test('Add Expense: Asynchronous action (with values)', (done) => {
         timestamp: 2000
     };
 
-    // Create an empty store (passing in default data)
-    const store = createMockStore({});
+    // Create a store, passing in state
+    const store = createMockStore(authState);
 
     store.dispatch(startAddExpense(expenseData))
         // Promise chain the result of the returned promise in startAddExpense
@@ -69,7 +70,7 @@ test('Add Expense: Asynchronous action (with values)', (done) => {
             });
 
             // Check if database was correctly updated
-            return database.ref(`expenses/${actions[0].expense.id}`)
+            return database.ref(`users/${uid}/expenses/${actions[0].expense.id}`)
                 .once('value');
         })
         // Resolves/rejects the returned promise above
@@ -82,7 +83,7 @@ test('Add Expense: Asynchronous action (with values)', (done) => {
 });
 
 test('Add Expense: Asynchronous action (defaults)', (done) => {
-    const store = createMockStore({});
+    const store = createMockStore(authState);
 
     store.dispatch(startAddExpense())
         .then(() => {
@@ -100,7 +101,7 @@ test('Add Expense: Asynchronous action (defaults)', (done) => {
                 }
             });
 
-            return database.ref(`expenses/${actions[0].expense.id}`)
+            return database.ref(`users/${uid}/expenses/${actions[0].expense.id}`)
                 .once('value');
         })
         .then((snapshot) => {
@@ -139,6 +140,28 @@ test('Expense Action Object (default): removeExpense', () => {
     });
 });
 
+test('Remove Expense Asynchronous Action Generator', (done) => {
+    const store = createMockStore(authState);
+
+    store.dispatch(startRemoveExpense(expenses[0].id))
+        .then(() => {
+            const actions = store.getActions();
+
+            expect(actions[0]).toEqual({
+                type: 'REMOVE_EXPENSE',
+                id: expenses[0].id
+            });
+
+            return database.ref(`users/${uid}/expenses/${expenses[0].id}`)
+                .once('value')
+        })
+        .then((snapshot) => {
+            expect(snapshot.exists()).toBeFalsy();
+            done();
+        })
+        .catch((e) => console.log('Error removing expense', e));
+});
+
 
 
 /**
@@ -172,57 +195,8 @@ test ('Expense Action Object (default): editExpense', () => {
     });
 });
 
-test('Set Expenses Action Generator', () => {
-    const action = setExpenses(expenses);
-
-    expect(action).toEqual({
-        type: 'SET_EXPENSES',
-        expenses
-    })
-});
-
-test('Set Expenses Asynchronous Action Generator', (done) => {
-    const store = createMockStore({});
-
-    store.dispatch(startSetExpenses())
-        .then(() => {
-            // Check if the action was correctly dispatched
-            const actions = store.getActions();
-
-            expect(actions[0]).toEqual({
-                type: 'SET_EXPENSES',
-                expenses
-            });
-
-            done();
-        })
-        .catch((e) => console.log('Error reading DB: ', e));
-});
-
-test('Remove Expense Asynchronous Action Generator', (done) => {
-    const store = createMockStore({});
-
-    store.dispatch(startRemoveExpense(expenses[0].id))
-        .then(() => {
-            const actions = store.getActions();
-
-            expect(actions[0]).toEqual({
-                type: 'REMOVE_EXPENSE',
-                id: expenses[0].id
-            });
-
-            return database.ref(`expenses/${expenses[0].id}`)
-                .once('value')
-        })
-        .then((snapshot) => {
-            expect(snapshot.exists()).toBeFalsy();
-            done();
-        })
-        .catch((e) => console.log('Error removing expense', e));
-});
-
 test('Edit Expense Asynchronous Action Generator', (done) => {
-    const store = createMockStore({});
+    const store = createMockStore(authState);
 
     const id = expenses[0].id;
     const updates = {
@@ -242,7 +216,7 @@ test('Edit Expense Asynchronous Action Generator', (done) => {
                 updates
             });
 
-            return database.ref(`expenses/${id}`)
+            return database.ref(`users/${uid}/expenses/${id}`)
                 .once('value')
         })
         .then((snapshot) => {
@@ -256,4 +230,35 @@ test('Edit Expense Asynchronous Action Generator', (done) => {
             done();
         })
         .catch((e) => console.log('Error editing expense', e));
+});
+
+
+
+
+
+test('Set Expenses Action Generator', () => {
+    const action = setExpenses(expenses);
+
+    expect(action).toEqual({
+        type: 'SET_EXPENSES',
+        expenses
+    })
+});
+
+test('Set Expenses Asynchronous Action Generator', (done) => {
+    const store = createMockStore(authState);
+
+    store.dispatch(startSetExpenses())
+        .then(() => {
+            // Check if the action was correctly dispatched
+            const actions = store.getActions();
+
+            expect(actions[0]).toEqual({
+                type: 'SET_EXPENSES',
+                expenses
+            });
+
+            done();
+        })
+        .catch((e) => console.log('Error reading DB: ', e));
 });

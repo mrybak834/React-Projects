@@ -46,7 +46,8 @@ export const addExpense = (expense) => (
  * 
  */
 export const startAddExpense = (expenseData = {}) => {
-    return (dispatch) => {
+    return (dispatch, getState) => {
+        const uid = getState().auth.uid;
         const {
             description = '', 
             note = '', 
@@ -59,7 +60,7 @@ export const startAddExpense = (expenseData = {}) => {
         // Since it dispatches to the store, and we are hooked up to a fake store in our test cases
         // We can access the result of the dispatch call in our tests, as a promise
         // Since we return it, this result can be (and is) promise chained for our tests
-        return database.ref('expenses')
+        return database.ref(`users/${uid}/expenses`)
             .push(expense)
             .then((ref) => {
                 dispatch(addExpense({
@@ -81,8 +82,9 @@ export const removeExpense = (id = undefined) => (
 );
 
 export const startRemoveExpense = (id) => {
-    return (dispatch) => {
-        return database.ref(`expenses/${id}`)
+    return (dispatch, getState) => {
+        const uid = getState().auth.uid;
+        return database.ref(`users/${uid}/expenses/${id}`)
             .remove()
             .then(() => {
                 dispatch(removeExpense(id));
@@ -102,8 +104,9 @@ export const editExpense = (id = undefined, updates = {}) => (
 );
 
 export const startEditExpense = (id = undefined, updates = {}) => {
-    return (dispatch) => {
-        return database.ref(`expenses/${id}`)
+    return (dispatch, getState) => {
+        const uid = getState().auth.uid;
+        return database.ref(`users/${uid}/expenses/${id}`)
             .update(updates)
             .then(() => {
                 dispatch(editExpense(id, updates));
@@ -121,9 +124,9 @@ export const setExpenses = (expenses) => ({
 });
 
 export const startSetExpenses = () => {
-    return (dispatch) => {
-
-        return database.ref('expenses')
+    return (dispatch, getState) => {
+        const uid = getState().auth.uid;
+        return database.ref(`users/${uid}/expenses`)
             .once('value')
             .then((snapshot) => {
                 const expenses = [];
