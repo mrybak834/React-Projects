@@ -17,6 +17,7 @@ import 'react-dates/lib/css/_datepicker.css';
 import { startSetExpenses } from './redux/actions/expenses';
 import { signIn, signOut } from './redux/actions/auth';
 import { auth } from './firebase/firebase';
+import LoadingPage from './components/LoadingPage';
 
 
 const store = configureStore();
@@ -40,14 +41,17 @@ const jsx = (
  */
 let hasRendered = false;
 const renderApp = () => {
-    if(!hasRendered){
-        ReactDOM.render( jsx, document.getElementById('app'));
+    if (!hasRendered) {
+        ReactDOM.render(jsx, document.getElementById('app'));
         hasRendered = true;
     }
 };
 
+
+ReactDOM.render(<LoadingPage />, document.getElementById('app'));
+
 auth.onAuthStateChanged((user) => {
-    if (user){
+    if (user) {
         // Calls the normal action generator, because it runs not only when the user explicitly clicks sign in / out,
         // but also just when the user loads the page
         store.dispatch(signIn(user.uid));

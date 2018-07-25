@@ -5,8 +5,12 @@ import { startSignIn } from '../redux/actions/auth';
 export class SignInPage extends React.Component {
     render() {
         return (
-            <div>
-                <button onClick={this.props.startSignIn}>Log In</button>
+            <div className="box-layout">
+                <div className="box-layout__box">
+                    <h1 className="box-layout__title">Expensify</h1>
+                    <p>Easily manager your budget</p>
+                    <button className="button" onClick={this.props.startSignIn}>Sign In with Google</button>
+                </div>
             </div>
         );
     }
