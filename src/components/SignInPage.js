@@ -8,7 +8,7 @@ export class SignInPage extends React.Component {
             <div className="box-layout">
                 <div className="box-layout__box">
                     <h1 className="box-layout__title">Expensify</h1>
-                    <p>Easily manager your budget</p>
+                    <p>Easily manage your budget</p>
                     <button className="button" onClick={this.props.startSignIn}>Sign In with Google</button>
                 </div>
             </div>
